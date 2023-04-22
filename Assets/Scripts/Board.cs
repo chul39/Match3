@@ -85,29 +85,37 @@ public class Board : MonoBehaviour
         inGameItems[position.x, position.y] = item;
     }
 
+    private void RemoveItem(Vector2Int position)
+    {
+        if (inGameItems[position.x, position.y] == null) return;
+        if (!inGameItems[position.x, position.y].GetIsMatched()) return;
+        Destroy(inGameItems[position.x, position.y].gameObject);
+        inGameItems[position.x, position.y] = null;
+    }
+
     public void CheckMatches()
     {
         matcher.CheckMatches();
     }
 
-    public void SetItemAtPosition(Vector2Int targetPosition, Item item)
+    public void SetItem(Vector2Int targetPosition, Item item)
     {
         inGameItems[targetPosition.x, targetPosition.y] = item;
     }
 
-    public void SetItemAtPosition(int x, int y, Item item)
+    public void SetItem(int x, int y, Item item)
     {
         inGameItems[x, y] = item;
     }
 
-    public Item GetItemAtPosition(Vector2Int targetPosition)
+    public Item GetItem(Vector2Int targetPosition)
     {
         if (targetPosition.x < 0 || targetPosition.x >= width) return null;
         if (targetPosition.y < 0 || targetPosition.y >= height) return null;
         return inGameItems[targetPosition.x , targetPosition.y];
     }
 
-    public Item GetItemAtPosition(int x, int y)
+    public Item GetItem(int x, int y)
     {
         if (x < 0 || x >= width || y < 0 || y >= height) return null;
         return inGameItems[x , y];
@@ -121,6 +129,14 @@ public class Board : MonoBehaviour
     public int GetHeight()
     {
         return height;
+    }
+
+    public void RemoveMatches()
+    {
+        List<Item> currentMatches = matcher.GetCurrentMatches();
+        currentMatches.ForEach(item => {
+            if (item != null) RemoveItem(item.GetIndexPosition());
+        });
     }
 
 }

@@ -7,7 +7,7 @@ public class ItemMatcher : MonoBehaviour
 {
     private Board board;
 
-    public List<Item> currentMatches = new List<Item>();
+    private List<Item> currentMatches = new List<Item>();
 
     private void Awake() {
         board = FindObjectOfType<Board>();
@@ -19,7 +19,7 @@ public class ItemMatcher : MonoBehaviour
         {
             for (int y = 0; y < board.GetHeight(); y++)
             {
-                Item currentItem = board.GetItemAtPosition(x, y);
+                Item currentItem = board.GetItem(x, y);
                 if (currentItem == null) continue;
 
                 // Check horizontal
@@ -35,9 +35,9 @@ public class ItemMatcher : MonoBehaviour
     private void CheckMatchesHorizontal(Item item)
     {
         Vector2Int itemPosition = item.GetIndexPosition();
-        Item leftItem = board.GetItemAtPosition(itemPosition.x - 1, itemPosition.y);
-        Item rightItem = board.GetItemAtPosition(itemPosition.x + 1, itemPosition.y);
-        if (leftItem == null && rightItem == null) return;
+        Item leftItem = board.GetItem(itemPosition.x - 1, itemPosition.y);
+        Item rightItem = board.GetItem(itemPosition.x + 1, itemPosition.y);
+        if (leftItem == null || rightItem == null) return;
         if (CheckIsSameType(item, leftItem) && CheckIsSameType(item, rightItem))
         {
             AddToCurrentMatches(item);
@@ -49,9 +49,9 @@ public class ItemMatcher : MonoBehaviour
     private void CheckMatchesVertical(Item item)
     {
         Vector2Int itemPosition = item.GetIndexPosition();
-        Item belowItem = board.GetItemAtPosition(itemPosition.x, itemPosition.y - 1);
-        Item aboveItem = board.GetItemAtPosition(itemPosition.x, itemPosition.y + 1);
-        if (aboveItem == null && belowItem == null) return;
+        Item belowItem = board.GetItem(itemPosition.x, itemPosition.y - 1);
+        Item aboveItem = board.GetItem(itemPosition.x, itemPosition.y + 1);
+        if (aboveItem == null || belowItem == null) return;
         if (CheckIsSameType(item, aboveItem) && CheckIsSameType(item, belowItem))
         {
             AddToCurrentMatches(item);
@@ -69,6 +69,11 @@ public class ItemMatcher : MonoBehaviour
     {
         item.SetIsMatched(true);
         currentMatches.Add(item);
+    }
+
+    public List<Item> GetCurrentMatches()
+    {
+        return currentMatches;
     }
 
 }

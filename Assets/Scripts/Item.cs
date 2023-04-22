@@ -32,7 +32,7 @@ public class Item : MonoBehaviour
         else
         {
             transform.position = new Vector3(indexPosition.x, indexPosition.y, 0f);
-            board.SetItemAtPosition(indexPosition, this);
+            board.SetItem(indexPosition, this);
         }
         
         if (isPressed && Input.GetMouseButtonUp(0))
@@ -74,14 +74,14 @@ public class Item : MonoBehaviour
         if (swipeAngle <= -45 && swipeAngle >= -135) targetY -= 1;
 
         Vector2Int newPosition = new Vector2Int(targetX, targetY);
-        toBeSwappedItem = board.GetItemAtPosition(newPosition);
+        toBeSwappedItem = board.GetItem(newPosition);
         if (toBeSwappedItem == null) return;
 
         toBeSwappedItem.SetIndexPosition(this.indexPosition);
-        board.SetItemAtPosition(this.indexPosition, toBeSwappedItem);
+        board.SetItem(this.indexPosition, toBeSwappedItem);
 
         SetIndexPosition(newPosition);
-        board.SetItemAtPosition(newPosition, this);
+        board.SetItem(newPosition, this);
 
         StartCoroutine(CheckMoveCoroutine());
     }
@@ -119,9 +119,13 @@ public class Item : MonoBehaviour
         if (!isMatched && !toBeSwappedItem.GetIsMatched())
         {
             toBeSwappedItem.SetIndexPosition(indexPosition);
-            board.SetItemAtPosition(indexPosition, toBeSwappedItem);
+            board.SetItem(indexPosition, toBeSwappedItem);
             indexPosition = previousPosition;
-            board.SetItemAtPosition(previousPosition, this);
+            board.SetItem(previousPosition, this);
+        }
+        else
+        {
+            board.RemoveMatches();
         }
     }
 
