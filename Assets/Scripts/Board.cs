@@ -8,8 +8,8 @@ public class Board : MonoBehaviour
     [SerializeField] private int width;
     [SerializeField] private int height;
     [SerializeField] private GameObject tilePrefab;
-    [SerializeField] private Item[] items;
 
+    [SerializeField] private Item[] items;
     private Item[,] inGameItems;
 
     private void Start()
@@ -34,7 +34,7 @@ public class Board : MonoBehaviour
                 SpawnItem(new Vector2Int(x, y));
             }
         }
-        transform.position = new Vector2(-(float)(width - 1) / 2f, -(float)(height - 1) / 2f);
+        Camera.main.transform.position = new Vector3((float)(width - 1) / 2f, (float)(height - 1) / 2f, -10f);
     }
 
     private void SpawnItem(Vector2Int position)
@@ -49,6 +49,18 @@ public class Board : MonoBehaviour
         item.name = $"Item ({position.x},{position.y})";
         item.SetupItem(position, this);
         inGameItems[position.x, position.y] = item;
+    }
+
+    public void SetItemAtPosition(Vector2Int targetPosition, Item item)
+    {
+        inGameItems[targetPosition.x, targetPosition.y] = item;
+    }
+
+    public Item GetItemAtPosition(Vector2Int targetPosition)
+    {
+        if (targetPosition.x < 0 || targetPosition.x >= width) return null;
+        if (targetPosition.y < 0 || targetPosition.y >= height) return null;
+        return inGameItems[targetPosition.x , targetPosition.y];
     }
 
 }
