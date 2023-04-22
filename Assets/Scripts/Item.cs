@@ -25,7 +25,6 @@ public class Item : MonoBehaviour
 
     private void Update()
     {
-        // Lerp item to target position
         if (Vector2.Distance(transform.position, indexPosition) > 0.1f)
         {
             transform.position = Vector2.Lerp(transform.position, indexPosition, moveSpeed * Time.deltaTime);
@@ -36,7 +35,6 @@ public class Item : MonoBehaviour
             board.SetItemAtPosition(indexPosition, this);
         }
         
-        // Move when mouse is up
         if (isPressed && Input.GetMouseButtonUp(0))
         {
             finalPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);

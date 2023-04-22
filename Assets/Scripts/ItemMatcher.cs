@@ -49,8 +49,8 @@ public class ItemMatcher : MonoBehaviour
     private void CheckMatchesVertical(Item item)
     {
         Vector2Int itemPosition = item.GetIndexPosition();
-        Item aboveItem = board.GetItemAtPosition(itemPosition.x, itemPosition.y - 1);
-        Item belowItem = board.GetItemAtPosition(itemPosition.x, itemPosition.y + 1);
+        Item belowItem = board.GetItemAtPosition(itemPosition.x, itemPosition.y - 1);
+        Item aboveItem = board.GetItemAtPosition(itemPosition.x, itemPosition.y + 1);
         if (aboveItem == null && belowItem == null) return;
         if (CheckIsSameType(item, aboveItem) && CheckIsSameType(item, belowItem))
         {

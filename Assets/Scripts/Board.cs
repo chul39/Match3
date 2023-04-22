@@ -49,9 +49,31 @@ public class Board : MonoBehaviour
         Camera.main.transform.position = new Vector3((float)(width - 1) / 2f, (float)(height - 1) / 2f, -10f);
     }
 
+    private bool checkForInitialMatches(Vector2Int checkPosition, Item item)
+    {
+        if (checkPosition.x > 1)
+        {
+            ItemType itemType1 = item.GetItemType();
+            ItemType itemType2 = inGameItems[checkPosition.x - 1, checkPosition.y].GetItemType();
+            ItemType itemType3 = inGameItems[checkPosition.x - 2, checkPosition.y].GetItemType();
+            if (itemType1 == itemType2 && itemType1 == itemType3) return true;
+        }
+        if (checkPosition.y > 1)
+        {
+            ItemType itemType1 = item.GetItemType();
+            ItemType itemType2 = inGameItems[checkPosition.x, checkPosition.y - 1].GetItemType();
+            ItemType itemType3 = inGameItems[checkPosition.x, checkPosition.y - 2].GetItemType();
+            if (itemType1 == itemType2 && itemType1 == itemType3) return true;
+        }
+        return false;
+    }
+
     private void SpawnItem(Vector2Int position)
     {
         int targetIndex = Random.Range(0, items.Length);
+        while (checkForInitialMatches(position, items[targetIndex])) {
+            targetIndex = Random.Range(0, items.Length);
+        }
         Item item = Instantiate(
             items[targetIndex], 
             new Vector3(position.x, position.y, 0f), 
@@ -87,8 +109,7 @@ public class Board : MonoBehaviour
 
     public Item GetItemAtPosition(int x, int y)
     {
-        if (x < 0 || x >= width) return null;
-        if (y < 0 || y >= height) return null;
+        if (x < 0 || x >= width || y < 0 || y >= height) return null;
         return inGameItems[x , y];
     }
 
