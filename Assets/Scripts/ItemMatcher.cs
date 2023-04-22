@@ -15,7 +15,6 @@ public class ItemMatcher : MonoBehaviour
 
     public void CheckMatches()
     {
-        // currentMatches.Clear();
         for (int x = 0; x < board.GetWidth(); x++)
         {
             for (int y = 0; y < board.GetHeight(); y++)

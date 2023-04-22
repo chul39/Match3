@@ -27,7 +27,7 @@ public class Board : MonoBehaviour
 
     private void Update()   
     {
-        matcher.CheckMatches();
+        CheckMatches();
     }
     
     private void Setup()
@@ -61,6 +61,11 @@ public class Board : MonoBehaviour
         item.name = $"Item ({position.x},{position.y})";
         item.SetupItem(position, this);
         inGameItems[position.x, position.y] = item;
+    }
+
+    public void CheckMatches()
+    {
+        matcher.CheckMatches();
     }
 
     public void SetItemAtPosition(Vector2Int targetPosition, Item item)

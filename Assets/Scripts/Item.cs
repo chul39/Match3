@@ -18,6 +18,7 @@ public class Item : MonoBehaviour
     [SerializeField] private float moveSpeed = 5f;
     
     // Other props
+    private Vector2Int previousPosition;
     [SerializeField] private ItemType type;
     [SerializeField] private bool isMatched = false;
 
@@ -66,6 +67,7 @@ public class Item : MonoBehaviour
 
     private void MoveItem()
     {
+        previousPosition = indexPosition;
         int targetX = indexPosition.x;
         int targetY = indexPosition.y;
         if (swipeAngle < 45 && swipeAngle > -45) targetX += 1;
@@ -80,8 +82,10 @@ public class Item : MonoBehaviour
         toBeSwappedItem.SetIndexPosition(this.indexPosition);
         board.SetItemAtPosition(this.indexPosition, toBeSwappedItem);
 
-        this.SetIndexPosition(newPosition);
+        SetIndexPosition(newPosition);
         board.SetItemAtPosition(newPosition, this);
+
+        StartCoroutine(CheckMoveCoroutine());
     }
 
     public void SetIndexPosition(Vector2Int newPosition)
@@ -107,6 +111,20 @@ public class Item : MonoBehaviour
     public bool GetIsMatched()
     {
         return isMatched;
+    }
+
+    private IEnumerator CheckMoveCoroutine()
+    {
+        yield return new WaitForSeconds(.5f);
+        board.CheckMatches();
+        if (toBeSwappedItem == null) yield break;
+        if (!isMatched && !toBeSwappedItem.GetIsMatched())
+        {
+            toBeSwappedItem.SetIndexPosition(indexPosition);
+            board.SetItemAtPosition(indexPosition, toBeSwappedItem);
+            indexPosition = previousPosition;
+            board.SetItemAtPosition(previousPosition, this);
+        }
     }
 
 }
