@@ -12,11 +12,23 @@ public class Board : MonoBehaviour
     [SerializeField] private Item[] items;
     private Item[,] inGameItems;
 
+    private ItemMatcher matcher;
+
+    private void Awake()
+    {
+        matcher = FindObjectOfType<ItemMatcher>();
+    }
+
     private void Start()
     {
         inGameItems = new Item[width, height];
         Setup();
-    }   
+    }
+
+    private void Update()   
+    {
+        matcher.CheckMatches();
+    }
     
     private void Setup()
     {
@@ -56,11 +68,33 @@ public class Board : MonoBehaviour
         inGameItems[targetPosition.x, targetPosition.y] = item;
     }
 
+    public void SetItemAtPosition(int x, int y, Item item)
+    {
+        inGameItems[x, y] = item;
+    }
+
     public Item GetItemAtPosition(Vector2Int targetPosition)
     {
         if (targetPosition.x < 0 || targetPosition.x >= width) return null;
         if (targetPosition.y < 0 || targetPosition.y >= height) return null;
         return inGameItems[targetPosition.x , targetPosition.y];
+    }
+
+    public Item GetItemAtPosition(int x, int y)
+    {
+        if (x < 0 || x >= width) return null;
+        if (y < 0 || y >= height) return null;
+        return inGameItems[x , y];
+    }
+
+    public int GetWidth()
+    {
+        return width;
+    }
+
+    public int GetHeight()
+    {
+        return height;
     }
 
 }

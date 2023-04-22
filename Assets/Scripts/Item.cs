@@ -5,15 +5,22 @@ using UnityEngine;
 public class Item : MonoBehaviour
 {
 
+    // Position
     [SerializeField] private Vector2Int indexPosition;
     private Board board;
 
+    // Movement
     private Vector2 initialPosition;
     private Vector2 finalPosition;
     private bool isPressed;
     private float swipeAngle;
     private Item toBeSwappedItem;
     [SerializeField] private float moveSpeed = 5f;
+    
+    // Other props
+    [SerializeField] private ItemType type;
+    [SerializeField] private bool isMatched = false;
+
 
     private void Update()
     {
@@ -85,6 +92,21 @@ public class Item : MonoBehaviour
     public Vector2Int GetIndexPosition()
     {
         return indexPosition;
+    }
+
+    public ItemType GetItemType()
+    {
+        return type;
+    }
+
+    public void SetIsMatched(bool isMatched)
+    {
+        this.isMatched = isMatched;
+    }
+
+    public bool GetIsMatched()
+    {
+        return isMatched;
     }
 
 }
