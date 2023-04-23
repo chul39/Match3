@@ -113,7 +113,7 @@ public class Item : MonoBehaviour
 
     private IEnumerator CheckMoveCoroutine()
     {
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(.3f);
         board.CheckMatches();
         if (toBeSwappedItem == null) yield break;
         if (!isMatched && !toBeSwappedItem.GetIsMatched())

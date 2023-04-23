@@ -14,6 +14,8 @@ public class Board : MonoBehaviour
 
     private ItemMatcher matcher;
 
+    private int combo = 1;
+
     private void Awake()
     {
         matcher = FindObjectOfType<ItemMatcher>();
@@ -43,7 +45,12 @@ public class Board : MonoBehaviour
                 );
                 tile.transform.parent = transform;
                 tile.name = $"Tile ({x},{y})";
-                SpawnItem(new Vector2Int(x, y));
+                Vector2Int targetPosition = new Vector2Int(x, y);
+                int targetIndex = Random.Range(0, items.Length);
+                while (checkForInitialMatches(targetPosition, items[targetIndex])) {
+                    targetIndex = Random.Range(0, items.Length);
+                }
+                SpawnItem(targetPosition, items[targetIndex]);
             }
         }
         Camera.main.transform.position = new Vector3((float)(width - 1) / 2f, (float)(height - 1) / 2f, -10f);
@@ -68,15 +75,11 @@ public class Board : MonoBehaviour
         return false;
     }
 
-    private void SpawnItem(Vector2Int position)
+    private void SpawnItem(Vector2Int position, Item toBeSpawnedItem)
     {
-        int targetIndex = Random.Range(0, items.Length);
-        while (checkForInitialMatches(position, items[targetIndex])) {
-            targetIndex = Random.Range(0, items.Length);
-        }
         Item item = Instantiate(
-            items[targetIndex], 
-            new Vector3(position.x, position.y, 0f), 
+            toBeSpawnedItem, 
+            new Vector3(position.x, position.y + height, 0f), 
             Quaternion.identity
         );
         item.transform.parent = this.transform;
@@ -137,6 +140,62 @@ public class Board : MonoBehaviour
         currentMatches.ForEach(item => {
             if (item != null) RemoveItem(item.GetIndexPosition());
         });
+        StartCoroutine(PostRemovalCouroutine());
+    }
+
+    private IEnumerator PostRemovalCouroutine()
+    {
+        yield return new WaitForSeconds(.2f);
+        UpdateItemsPositionPostRemoval();
+        yield return new WaitForSeconds(.2f);
+        RefillBoardPostRemoval();
+        yield return new WaitForSeconds(.5f);
+        if (matcher.GetCurrentMatches().Count > 0) {
+            combo++;
+            Debug.Log("COMBO x" + combo);
+            RemoveMatches();
+        }
+        else
+        {
+            combo = 1;
+        }
+    }
+
+    private void UpdateItemsPositionPostRemoval()
+    {
+        int nullCounter = 0;
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if (inGameItems[x, y] == null)
+                {
+                    nullCounter++;
+                }
+                else
+                {
+                    Vector2Int position = inGameItems[x, y].GetIndexPosition();
+                    position.y -= nullCounter;
+                    inGameItems[x, y].SetIndexPosition(position);
+                    inGameItems[x, y - nullCounter] = inGameItems[x, y];
+                    inGameItems[x, y] = null;
+                }
+            }
+            nullCounter = 0;
+        }
+    }
+
+    private void RefillBoardPostRemoval()
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if (inGameItems[x, y] != null) continue;
+                int targetIndex = Random.Range(0, items.Length);
+                SpawnItem(new Vector2Int(x, y), items[targetIndex]);
+            }
+        }
     }
 
 }

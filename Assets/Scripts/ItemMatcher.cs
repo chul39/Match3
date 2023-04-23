@@ -29,7 +29,10 @@ public class ItemMatcher : MonoBehaviour
                 if (y > 0 && y < board.GetHeight() - 1) CheckMatchesVertical(currentItem);
             }
         }
-        if (currentMatches.Count > 0) currentMatches = currentMatches.Distinct().ToList();
+        if (currentMatches.Count > 0) {
+            currentMatches.RemoveAll(item => item == null);
+            currentMatches = currentMatches.Distinct().ToList();
+        }
     }
 
     private void CheckMatchesHorizontal(Item item)
@@ -69,6 +72,11 @@ public class ItemMatcher : MonoBehaviour
     {
         item.SetIsMatched(true);
         currentMatches.Add(item);
+    }
+
+    public void UpdateCurrentMatchesPostRemoval()
+    {
+        currentMatches.RemoveAll(item => item == null);
     }
 
     public List<Item> GetCurrentMatches()
