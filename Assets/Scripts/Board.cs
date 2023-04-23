@@ -8,11 +8,12 @@ public class Board : MonoBehaviour
     [SerializeField] private int width;
     [SerializeField] private int height;
     [SerializeField] private GameObject tilePrefab;
-
     [SerializeField] private Item[] items;
     private Item[,] inGameItems;
 
     private ItemMatcher matcher;
+
+    private BoardState currentState = BoardState.isUpdating;
 
     private int combo = 1;
 
@@ -54,6 +55,7 @@ public class Board : MonoBehaviour
             }
         }
         Camera.main.transform.position = new Vector3((float)(width - 1) / 2f, (float)(height - 1) / 2f, -10f);
+        currentState = BoardState.isStandBy;
     }
 
     private bool checkForInitialMatches(Vector2Int checkPosition, Item item)
@@ -124,6 +126,16 @@ public class Board : MonoBehaviour
         return inGameItems[x , y];
     }
 
+    public void SetCurrentState(BoardState state)
+    {
+        currentState = state;
+    }
+
+    public BoardState GetCurrentState()
+    {
+        return currentState;
+    }
+
     public int GetWidth()
     {
         return width;
@@ -157,6 +169,7 @@ public class Board : MonoBehaviour
         }
         else
         {
+            currentState = BoardState.isStandBy;
             combo = 1;
         }
     }

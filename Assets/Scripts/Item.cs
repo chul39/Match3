@@ -37,8 +37,10 @@ public class Item : MonoBehaviour
         
         if (isPressed && Input.GetMouseButtonUp(0))
         {
+            if (board.GetCurrentState() != BoardState.isStandBy) return;
             finalPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             isPressed = false;
+            board.SetCurrentState(BoardState.isUpdating);
             CalculateMovementAngle();
         }
     }
@@ -50,6 +52,7 @@ public class Item : MonoBehaviour
     }
 
     private void OnMouseDown() {
+        if (board.GetCurrentState() != BoardState.isStandBy) return;
         initialPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         isPressed = true;
     }
@@ -122,6 +125,7 @@ public class Item : MonoBehaviour
             board.SetItem(indexPosition, toBeSwappedItem);
             indexPosition = previousPosition;
             board.SetItem(previousPosition, this);
+            board.SetCurrentState(BoardState.isStandBy);
         }
         else
         {
